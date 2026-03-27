@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend  # ← ADD THIS — all `run` steps now execute inside frontend/
+        working-directory: frontend
     steps:
       - name: 🔄 Checkout Repository
         uses: actions/checkout@v3
@@ -22,9 +22,12 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json  # ← ADD THIS — cache needs the correct lockfile path
+          cache-dependency-path: frontend/package-lock.json
 
-      - run: npm install --force
+      - name: 🧹 Clean install (fix native binding resolution)
+        run: rm -rf node_modules package-lock.json
+
+      - run: npm install
 
       - name: 🌎 Create Environment File
         run: |
