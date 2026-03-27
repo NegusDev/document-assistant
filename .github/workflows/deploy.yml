@@ -1,5 +1,4 @@
-name: Deploy backend
-
+name: Deploy Frontend  # ← was "Deploy backend" (wrong name)
 on:
   push:
     branches:
@@ -7,42 +6,45 @@ on:
     paths:
       - 'frontend/**'
       - '.github/workflows/deploy.yml'
-
 jobs:
   deploy:
     name: 🚀 Deploy React App via FTP
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: frontend  # ← ADD THIS — all `run` steps now execute inside frontend/
     steps:
-    - name: 🔄 Checkout Repository
-      uses: actions/checkout@v3
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: 📦 Install Node.js and Dependencies
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: 'npm'
+      - name: 📦 Install Node.js and Dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json  # ← ADD THIS — cache needs the correct lockfile path
 
-    - run: npm install --force
+      - run: npm install --force
 
-    - name: 🌎 Create Environment File
-      run: |
-        echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env
-        echo "VITE_APP_ENV=production" >> .env
+      - name: 🌎 Create Environment File
+        run: |
+          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env
+          echo "VITE_APP_ENV=production" >> .env
+        # .env is now created inside frontend/ ✓
 
-    - name: 🛠️ Build Project
-      run: npm run build
+      - name: 🛠️ Build Project
+        run: npm run build
 
-    - name: 📂 Deploy via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.3.3
-      with:
-        server: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USER }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: dist/  # Upload the built files
-        server-dir: document-analyzer.megenez.online/
-        exclude: |
-          **/.git*
-          **/.github*
-          **/dist/.htaccess
-        dangerous-clean-slate: true
+      - name: 📂 Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: dist/   # ← was just dist/ — FTP action runs from repo root, not working-directory
+          server-dir: document-analyzer.megenez.online/
+          exclude: |
+            **/.git*
+            **/.github*
+            **/dist/.htaccess
+          dangerous-clean-slate: true
