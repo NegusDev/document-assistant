@@ -48,7 +48,7 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: frontend/dist/   # ← was just dist/ — FTP action runs from repo root, not working-directory
-          server-dir: document-analyzer.megenez.online/
+          server-dir: document-analyzer.cns.ug/
           exclude: |
             **/.git*
             **/.github*
