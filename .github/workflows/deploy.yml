@@ -27,7 +27,7 @@ jobs:
       - name: 🧹 Clean install (fix native binding resolution)
         run: rm -rf node_modules package-lock.json
 
-      - run: npm install
+      - run: npm install --force
 
       - name: 🌎 Create Environment File
         run: |
