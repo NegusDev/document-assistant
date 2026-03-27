@@ -1,0 +1,48 @@
+name: Deploy backend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    name: 🚀 Deploy React App via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🔄 Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: 📦 Install Node.js and Dependencies
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+
+    - run: npm install --force
+
+    - name: 🌎 Create Environment File
+      run: |
+        echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env
+        echo "VITE_APP_ENV=production" >> .env
+
+    - name: 🛠️ Build Project
+      run: npm run build
+
+    - name: 📂 Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USER }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: dist/  # Upload the built files
+        server-dir: document-analyzer.megenez.online/
+        exclude: |
+          **/.git*
+          **/.github*
+          **/dist/.htaccess
+        dangerous-clean-slate: true
