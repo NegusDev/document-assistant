@@ -47,10 +47,10 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: dist/   # ← was just dist/ — FTP action runs from repo root, not working-directory
+          local-dir: frontend/dist/   # ← was just dist/ — FTP action runs from repo root, not working-directory
           server-dir: document-analyzer.megenez.online/
           exclude: |
             **/.git*
             **/.github*
-            **/dist/.htaccess
+            **/frontend/dist/.htaccess
           dangerous-clean-slate: true
