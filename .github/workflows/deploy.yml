@@ -30,7 +30,7 @@ jobs:
       - run: npm install --force
 
       - name: 🔧 Fix Tailwind native binding for Linux CI
-        run: npm install @tailwindcss/oxide-linux-x64-gnu --no-save
+        run: npm install @tailwindcss/oxide-linux-x64-gnu --no-save --force
 
       - name: 🌎 Create Environment File
         run: |
