@@ -936,23 +936,9 @@ npm run build
 # Known Limitations
 
 * Quick Tunnel URL is temporary
-* OCR can be slower on scanned or image-heavy PDFs
 * Title and author may not always be clearly present in the source file
 * Large documents may need truncation before LLM analysis
 * Frontend production deployments depend on the active tunnel URL being current
-
----
-
-# Future Improvements
-
-* Replace Quick Tunnel with a named Cloudflare tunnel
-* Add a custom domain for the backend
-* Queue-based document processing for larger files
-* Downloadable analysis result as JSON or PDF
-* Better metadata extraction
-* Better OCR handling for complex document layouts
-* Store document history
-* Add authentication and user sessions
 
 ---
 
@@ -962,23 +948,9 @@ This project was built to demonstrate:
 
 * file upload handling
 * text extraction for PDF and DOCX
-* OCR fallback
 * structured AI summarization
 * clean frontend UX
 * deployable full-stack architecture
 * CI/CD for both frontend and backend
 
 ---
-
-# License
-
-This project is for demo and assessment purposes unless otherwise stated.
-
-```
-
-A couple of edits you should still make before pasting it in:
-- replace `YOUR_USERNAME/YOUR_REPO`
-- replace `youruser`
-- confirm the exact backend workflow filename
-- confirm the real FTP target directory if needed
-```
