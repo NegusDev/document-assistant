@@ -10,18 +10,16 @@ jobs:
   deploy-backend:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p "${{ secrets.VPS_PORT }}" -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
-
-      - name: Deploy backend on VPS
-        run: |
-          ssh -t -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << 'EOF'
+      - name: 🚀 Deploy backend on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
             set -e
-            cd "${{ secrets.PROJECT_DIR }}"
+            cd ${{ secrets.PROJECT_DIR }}
             git fetch origin
             git reset --hard origin/main
             cd backend
@@ -31,7 +29,6 @@ jobs:
             . .venv/bin/activate
             pip install --upgrade pip
             pip install -r requirements.txt
-            sudo systemctl restart doc-analyzer-api  # works now — NOPASSWD set above
+            sudo systemctl restart doc-analyzer-api
             sleep 5
             curl --fail http://127.0.0.1:8000/health
-          EOF
