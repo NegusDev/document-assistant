@@ -25,7 +25,7 @@ jobs:
           ssh -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << 'EOF'
             set -e
 
-            cd /var/www/doc-analyzer
+            cd "${{ secrets.PROJECT_DIR }}"
             git fetch origin
             git reset --hard origin/main
 
