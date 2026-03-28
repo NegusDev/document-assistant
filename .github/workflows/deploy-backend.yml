@@ -1,5 +1,4 @@
 name: Deploy backend
-
 on:
   push:
     branches:
@@ -7,11 +6,9 @@ on:
     paths:
       - 'backend/**'
       - '.github/workflows/deploy-backend.yml'
-
 jobs:
   deploy-backend:
     runs-on: ubuntu-latest
-
     steps:
       - name: Setup SSH
         run: |
@@ -22,25 +19,19 @@ jobs:
 
       - name: Deploy backend on VPS
         run: |
-          ssh -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << 'EOF'
+          ssh -t -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << 'EOF'
             set -e
-
             cd "${{ secrets.PROJECT_DIR }}"
             git fetch origin
             git reset --hard origin/main
-
             cd backend
-
             if [ ! -d ".venv" ]; then
               python3 -m venv .venv
             fi
-
             . .venv/bin/activate
             pip install --upgrade pip
             pip install -r requirements.txt
-
-            sudo systemctl restart doc-analyzer-api
-
+            sudo systemctl restart doc-analyzer-api  # works now — NOPASSWD set above
             sleep 5
             curl --fail http://127.0.0.1:8000/health
           EOF
